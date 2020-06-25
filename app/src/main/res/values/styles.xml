@@ -13,4 +13,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.Dark"
+        parent="Theme.AppCompat.DayNight">
+    </style>
+
+    <style name="AppTheme.DarkNoActionBar"
+        parent="Theme.AppCompat.DayNight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

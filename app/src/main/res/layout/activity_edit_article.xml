@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:padding="16dp"
+    android:orientation="vertical"
+    tools:context=".EditArticleActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit News"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="Title"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_custom"
+        android:hint="Title"
+        android:id="@+id/edtTitle_edit"
+        android:inputType="text"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="Location"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_custom"
+        android:hint="Location"
+        android:id="@+id/edtLocation_edit"
+        android:inputType="text"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="Description"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_custom"
+        android:hint="Description"
+        android:id="@+id/edtDescription_edit"
+        android:inputType="textMultiLine"
+        android:lines="7"
+        android:scrollbars="vertical"
+        android:maxLines="10"
+        android:gravity="top|left"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_primary_border_shadow"
+        android:elevation="2dp"
+        android:id="@+id/btnUpdate"
+        android:textColor="@color/colorWhite"
+        android:text="Update"/>
+
+</LinearLayout>

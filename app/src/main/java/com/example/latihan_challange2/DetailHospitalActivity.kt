@@ -25,7 +25,7 @@ class DetailHospitalActivity : AppCompatActivity() {
         val actionBar = supportActionBar
         actionBar!!.title = "COV ID"
         actionBar.subtitle = "Coronavirus Indonesia"
-        actionBar.elevation = 4.0F
+        actionBar.elevation = 0F
 
 
         getDataDetailHospital()
@@ -71,7 +71,7 @@ class DetailHospitalActivity : AppCompatActivity() {
 //        intent.putExtra("h_latitude", hospital.latitude)
 //        intent.putExtra("h_longitude", hospital.longitude)
 
-        var bundle: Bundle ?=intent.extras
+        var bundle: Bundle? = intent.extras
         var name = bundle!!.getString("h_name")
         var city = bundle!!.getString("h_city")
         var prov = bundle!!.getString("h_prov")

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".RegisterActivity">
 
     <LinearLayout
@@ -14,7 +14,7 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@mipmap/ic_covirus"
+            android:src="@drawable/logo"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"/>
 
@@ -24,7 +24,8 @@
             android:textAlignment="center"
             android:text="Register"
             android:textSize="20sp"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/colorPrimary"
+            android:gravity="center_horizontal" />
 
         <TextView
             android:layout_width="match_parent"
@@ -37,6 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Your Awesome name"
+            android:background="@drawable/edittext_custom"
+            android:textSize="14sp"
             android:id="@+id/edtUsername"
             android:inputType="text"
             android:layout_marginHorizontal="25dp"
@@ -52,6 +55,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/edittext_custom"
+            android:textSize="14sp"
             android:hint="example@domain.com"
             android:id="@+id/edtEmail"
             android:inputType="textEmailAddress"
@@ -69,6 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtPassword"
+            android:background="@drawable/edittext_custom"
+            android:textSize="14sp"
             android:inputType="textPassword"
             android:layout_marginHorizontal="25dp"
             android:layout_marginTop="5dp"/>
@@ -93,6 +100,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="+62 xxx-xxxx-xxxx"
+            android:background="@drawable/edittext_custom"
+            android:textSize="14sp"
             android:id="@+id/edtTelp"
             android:inputType="phone"
             android:layout_marginHorizontal="25dp"
@@ -112,6 +121,8 @@
             android:id="@+id/edtAddress"
             android:inputType="textMultiLine"
             android:lines="3"
+            android:background="@drawable/edittext_custom"
+            android:textSize="14sp"
             android:minLines="2"
             android:scrollbars="vertical"
             android:gravity="top|left"
@@ -125,8 +136,10 @@
             android:text="Daftar"
             android:layout_marginHorizontal="25dp"
             android:paddingHorizontal="15dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/button_primary_border_shadow"
             android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorWhite"
+            android:clickable="true"
             android:id="@+id/btnDaftar"/>
 
         <View
@@ -143,7 +156,10 @@
             android:text="Masuk"
             android:layout_marginHorizontal="25dp"
             android:paddingHorizontal="15dp"
+            android:background="@drawable/button_white_border_shadow"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
             android:id="@+id/btnMasuk"/>
 
     </LinearLayout>

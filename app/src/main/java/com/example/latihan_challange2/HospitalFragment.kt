@@ -1,5 +1,6 @@
 package com.example.latihan_challange2
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -166,7 +167,7 @@ class HospitalFragment : Fragment() {
 
     private fun displayHospital(Hospital: List<ApiHospitalItem>) {
         rv_listHospital.layoutManager = LinearLayoutManager(context)
-        rv_listHospital.adapter = HospitalAdapter(context!!, Hospital) {
+        rv_listHospital.adapter = HospitalAdapter(this!!.requireContext(), Hospital) {
             val hospital = it
             val intent = Intent(activity, DetailHospitalActivity::class.java)
             intent.putExtra("h_name", hospital.provinsi)

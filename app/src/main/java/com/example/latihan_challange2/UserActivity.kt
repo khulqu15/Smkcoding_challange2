@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.latihan_challange2.util.tampilToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_user.*
 
 class UserActivity : AppCompatActivity() {
 
@@ -30,7 +31,13 @@ class UserActivity : AppCompatActivity() {
         val actionBar = supportActionBar
         actionBar!!.title = "COV ID"
         actionBar.subtitle = "Coronavirus Indonesia"
-        actionBar.elevation = 4.0F
+        actionBar.elevation = 0F
+
+        btn_edit.setOnClickListener {
+            val intent = Intent(applicationContext, EditUserActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         initialize()
 
@@ -38,14 +45,13 @@ class UserActivity : AppCompatActivity() {
 
     private fun initialize() {
         mDatabase = FirebaseDatabase.getInstance()
-        mDatabaseReference = mDatabase!!.reference!!.child("Users")
         mAuth = FirebaseAuth.getInstance()
+        mDatabaseReference = mDatabase!!.reference!!.child("Users")
 
         tName = findViewById<View>(R.id.txtUserName) as TextView
         tEmail = findViewById<View>(R.id.txtUserEmail) as TextView
         tTelp = findViewById<View>(R.id.txtUserTelp) as TextView
         tAddress = findViewById<View>(R.id.txtUserAddress) as TextView
-        tVerikasi = findViewById<View>(R.id.txtUserEmailVerification) as TextView
     }
 
     override fun onStart() {
@@ -54,7 +60,6 @@ class UserActivity : AppCompatActivity() {
         val mUserReference = mDatabaseReference!!.child(mUser!!.uid)
 
         tEmail!!.text = mUser.email
-        tVerikasi!!.text = mUser.isEmailVerified.toString()
 
         mUserReference.addValueEventListener(object: ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {

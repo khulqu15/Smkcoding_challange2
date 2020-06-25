@@ -3,6 +3,7 @@ package com.example.latihan_challange2
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -25,21 +26,26 @@ class RegisterActivity : AppCompatActivity() {
     private var edtaddress: EditText? = null
     private var mProgressBar: ProgressDialog? = null
 
-    private var name: String? = null
-    private var email: String? = null
-    private var password: String? = null
-    private var telp: String? = null
-    private var address: String? = null
+    private var name: String? = ""
+    private var email: String? = ""
+    private var password: String? = ""
+    private var telp: String? = ""
+    private var address: String? = ""
 
     private var mDatabaseReference: DatabaseReference? = null
     private var mDatabase: FirebaseDatabase? = null
     private var mAuth: FirebaseAuth? = null
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        mAuth = FirebaseAuth.getInstance()
+        val user = mAuth!!.currentUser
+        if(user != null) {
+            edtEmail!!.text = user?.email!!.toEditable()
+            edtEmail.isEnabled = false
+        }
 
         initialize()
 
@@ -48,6 +54,8 @@ class RegisterActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
     private fun initialize() {
         edtname = findViewById<View>(R.id.edtUsername) as EditText
@@ -58,47 +66,78 @@ class RegisterActivity : AppCompatActivity() {
 
         mProgressBar = ProgressDialog(this)
 
-        mDatabase = FirebaseDatabase.getInstance()
-        mDatabaseReference = mDatabase!!.reference!!.child("Users")
-        mAuth = FirebaseAuth.getInstance()
-
         btnDaftar!!.setOnClickListener { onRegister() }
     }
 
     private fun onRegister() {
+
+        mAuth = FirebaseAuth.getInstance()
         name = edtname?.text.toString()
-        email = edtemail?.text.toString()
         password = edtpassword?.text.toString()
         telp = edttelp?.text.toString()
         address = edtaddress?.text.toString()
-        if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) &&
-                !TextUtils.isEmpty(telp) && !TextUtils.isEmpty(address)) {
+        val mAuth = FirebaseAuth.getInstance()
+        val user = mAuth.currentUser
+        if(user != null) {
+            mDatabase = FirebaseDatabase.getInstance()
+            mDatabaseReference = mDatabase!!.reference.child("Users")
             mProgressBar!!.setMessage("Mendaftarkan User...")
             mProgressBar!!.show()
-            mAuth!!
-                .createUserWithEmailAndPassword(email!!, password!!)
+            email = user.email
+            val userId = mAuth!!.currentUser!!.uid
+            verifyEmail()
+            mAuth!!.createUserWithEmailAndPassword(email!!, password!!)
                 .addOnCompleteListener(this) { task ->
-                    mProgressBar!!.hide()
-                    if(task.isSuccessful) {
-                        Log.d(Tag, "createUserWithEmail:success")
+                    if(task.isComplete) {
                         val userId = mAuth!!.currentUser!!.uid
-
-                        verifyEmail()
 
                         val currentUserDb = mDatabaseReference!!.child(userId)
                         currentUserDb.child("name").setValue(name)
+                        currentUserDb.child("email").setValue(email)
                         currentUserDb.child("telp").setValue(telp)
                         currentUserDb.child("address").setValue(address)
-
                         updateUserInfoAndUI()
+                    } else if(task.isCanceled) {
+                        tampilToast(this, "Pendaftaran dibatalkan")
                     } else {
-                        Log.w(Tag, "createUserWithEmail:failure", task.exception)
-                        tampilToast(this, "Authentification Fail")
+                        tampilToast(this, "Pendaftaran Gagal")
                     }
                 }
         } else {
-            tampilToast(this, "Isikan semua form.")
+            mDatabase = FirebaseDatabase.getInstance()
+            mDatabaseReference = mDatabase!!.reference.child("Users")
+            email = edtemail?.text.toString()
+            if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) &&
+                !TextUtils.isEmpty(telp) && !TextUtils.isEmpty(address)) {
+                mProgressBar!!.setMessage("Mendaftarkan User...")
+                mProgressBar!!.show()
+                mAuth!!
+                    .createUserWithEmailAndPassword(email!!, password!!)
+                    .addOnCompleteListener(this) { task ->
+                        mProgressBar!!.hide()
+                        if(task.isSuccessful) {
+                            Log.d(Tag, "createUserWithEmail:success")
+                            val userId = mAuth!!.currentUser!!.uid
+
+                            verifyEmail()
+
+                            val currentUserDb = mDatabaseReference!!.child(userId)
+                            currentUserDb.child("name").setValue(name)
+                            currentUserDb.child("email").setValue(email)
+                            currentUserDb.child("telp").setValue(telp)
+                            currentUserDb.child("address").setValue(address)
+
+                            updateUserInfoAndUI()
+                        } else {
+                            Log.w(Tag, "createUserWithEmail:failure", task.exception)
+                            tampilToast(this, "Authentification Fail")
+                        }
+                    }
+            } else {
+                tampilToast(this, "Isikan semua form.")
+            }
         }
+
     }
 
     private fun verifyEmail() {

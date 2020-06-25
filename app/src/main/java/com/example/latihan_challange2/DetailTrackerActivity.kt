@@ -60,14 +60,14 @@ class DetailTrackerActivity: AppCompatActivity() {
     private fun getDataDetailTracker() {
         var bundle: Bundle ?=intent.extras
         var procinces = bundle!!.getString("prov")
-        val confirm = bundle!!.getInt("confirmed")
-        val recover = bundle!!.getInt("recovered")
-        val death = bundle!!.getInt("death")
-        val case = bundle!!.getInt("case")
-        val date = bundle!!.getString("date")
-        val latitude = bundle!!.getDouble("latitude")
-        val longitude = bundle!!.getDouble("longitude")
-        val logo = bundle!!.getString("logo")
+        val confirm = bundle.getInt("confirmed")
+        val recover = bundle.getInt("recovered")
+        val death = bundle.getInt("death")
+        val case = bundle.getInt("case")
+        val date = bundle.getString("date")
+        val latitude = bundle.getDouble("latitude")
+        val longitude = bundle.getDouble("longitude")
+        val logo = bundle.getString("logo")
         txtProvinsi.text = procinces
         txtPositiveCovid.text = confirm.toString()
         txtRecoveredCovid.text = recover.toString()

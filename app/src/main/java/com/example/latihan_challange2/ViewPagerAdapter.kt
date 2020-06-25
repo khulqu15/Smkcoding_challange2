@@ -13,7 +13,7 @@ class ViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapte
             0 -> { return HomeFragment() }
             1 -> { return TrackerFragment() }
             2 -> { return HospitalFragment() }
-            3 -> { return AboutFragment() }
+            3 -> { return ArticleFragment() }
             else -> {
                 return HomeFragment()
             }
