@@ -12,8 +12,16 @@ import com.google.firebase.database.DatabaseReference
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.article_item.*
 
-class ArticleAdapter(private val context: Context, var list: ArrayList<Articles>):
+class ArticleAdapter(private val context: Context, var list: MutableList<Articles>):
             RecyclerView.Adapter<ArticleAdapter.ViewHolder>() {
+
+    lateinit var listener: MutableList<Articles>
+    private var item = emptyList<Articles>()
+
+    internal fun setData(item: List<Articles>) {
+        this.list = item as MutableList<Articles>
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(context, LayoutInflater.from(context).inflate(R.layout.article_item, parent, false))
@@ -23,7 +31,7 @@ class ArticleAdapter(private val context: Context, var list: ArrayList<Articles>
     }
 
     override fun onBindViewHolder(holder: ArticleAdapter.ViewHolder, position: Int) {
-        holder.bindItem(list.get(position), list)
+        holder.bindItem(list.get(position), list as ArrayList<Articles>)
         lateinit var ref: DatabaseReference
         lateinit var auth: FirebaseAuth
 
@@ -45,11 +53,7 @@ class ArticleAdapter(private val context: Context, var list: ArrayList<Articles>
         }
     }
 
-    fun setData(it: List<Articles>) {
-
-    }
-
-    class ViewHolder(val context: Context, override val containerView: View) :
+    inner class ViewHolder(val context: Context, override val containerView: View) :
         RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bindItem(
             item: Articles,
@@ -60,5 +64,6 @@ class ArticleAdapter(private val context: Context, var list: ArrayList<Articles>
             txtCreated.text = item.created_at
         }
     }
+
 
 }

@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.latihan_challange2.util.dismissLoading
 import com.example.latihan_challange2.util.tampilToast
 import com.example.latihan_challange2.viewmodel.ArticleFragmentViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -31,6 +30,8 @@ class ArticleFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        initialize()
     }
 
     override fun onCreateView(
@@ -43,28 +44,31 @@ class ArticleFragment : Fragment() {
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        init()
-        initialize()
-//        viewModel.init(requireContext())
-//        viewModel.allArticles.observe(viewLifecycleOwner, Observer { articels ->
-//            articels?.let { adapter?.setData(it) }
-//        })
-//        addArticle.setOnClickListener {
-//            val intent = Intent(context, AddArticleActivity::class.java)
-//            startActivity(intent)
-//        }
+
+
+        init()
+        viewModel.init(requireContext())
+        viewModel.allArticles.observe(viewLifecycleOwner, Observer { articels ->
+            articels?.let { adapter?.setData(it) }
+        })
+
+
+        addArticle.setOnClickListener {
+            val intent = Intent(context, AddArticleActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun init() {
         rv_listArticles.layoutManager = LinearLayoutManager(context)
-        adapter = ArticleAdapter(requireContext(), dataArticles as ArrayList<Articles>)
+        adapter = ArticleAdapter(requireContext(), dataArticles)
         rv_listArticles.adapter = adapter
-        adapter?.list = dataArticles as ArrayList<Articles>
+        adapter?.list = dataArticles
     }
 
 
     private fun initialize() {
-//        showLoading(context!!, swipeRefreshLayout)
+//        showLoading(requireContext(), swipeRefreshLayout)
         mDatabase = FirebaseDatabase.getInstance()
         mAuth = FirebaseAuth.getInstance()
         val user = mAuth!!.currentUser
@@ -77,8 +81,6 @@ class ArticleFragment : Fragment() {
                 val email = snapshot.child("email").getValue().toString()
                 if(email != "admin@sidescript.com") {
                     addArticle.hide()
-                } else {
-                    addArticle.show()
                 }
             }
         })
@@ -87,9 +89,8 @@ class ArticleFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {
                 activity?.let { tampilToast(it, "Gagal Error") }
             }
-
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dismissLoading(swipeRefreshLayout)
+//                dismissLoading(swipeRefreshLayout)
                 dataArticles = ArrayList<Articles>()
                 for (snapshot in dataSnapshot.children) {
                     val article = snapshot.getValue(Articles::class.java)
@@ -100,12 +101,13 @@ class ArticleFragment : Fragment() {
                     dataArticles as ArrayList<Articles>
                 )
 
-//                dataArticles = ArrayList()
-//                for (snapshot in dataSnapshot.children) {
-//                    val article = snapshot.getValue(Articles::class.java)
-//                    article?.article_key = (snapshot.key!!)
-//                }
-//                viewModel.insertAll(dataArticles)
+                dataArticles = ArrayList()
+                for (snapshot in dataSnapshot.children) {
+                    val article = snapshot.getValue(Articles::class.java)
+                    article?.article_key = (snapshot.key!!)
+                    dataArticles.add(article!!)
+                }
+                viewModel.insertAll(dataArticles)
             }
         })
     }
@@ -115,4 +117,5 @@ class ArticleFragment : Fragment() {
         this.clearFindViewByIdCache()
     }
 }
+
 

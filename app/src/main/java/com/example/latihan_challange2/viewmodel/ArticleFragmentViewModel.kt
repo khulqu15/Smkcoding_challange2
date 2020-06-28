@@ -25,11 +25,8 @@ class ArticleFragmentViewModel(): ViewModel() {
         repository.delete(articles)
     }
 
-    fun insertAll(articles: List<Articles>) {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun insertAll(articles: List<Articles>) = viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAll()
             repository.insertAll(articles)
-        }
     }
-
 }

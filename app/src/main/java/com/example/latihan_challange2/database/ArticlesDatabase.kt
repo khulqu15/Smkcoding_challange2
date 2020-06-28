@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 import com.example.latihan_challange2.Articles
 import com.example.latihan_challange2.dao.ArticlesDao
 
-@Database(entities = arrayOf(Articles::class), version = 1, exportSchema = false)
+@Database(entities = [Articles::class], version = 1, exportSchema = false)
 public abstract class ArticlesDatabase : RoomDatabase() {
     abstract fun articleDao() : ArticlesDao
     companion object {
+        @Volatile
         private var INSTANCE: ArticlesDatabase? = null
         fun getDatabase(context: Context): ArticlesDatabase {
             val tempIntance = INSTANCE
@@ -21,7 +22,7 @@ public abstract class ArticlesDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     ArticlesDatabase::class.java,
-                    "article_database"
+                    "Articles_database"
                 ).build()
                 INSTANCE = instance
                 return instance

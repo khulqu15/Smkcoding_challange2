@@ -8,7 +8,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import androidx.activity.viewModels
 import com.example.latihan_challange2.util.tampilToast
+import com.example.latihan_challange2.viewmodel.ArticleUpdateViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_edit_article.*
@@ -27,6 +29,10 @@ class EditArticleActivity : AppCompatActivity() {
     private var title: String? = ""
     private var location: String? = ""
     private var description: String? = ""
+    private var created: String? = ""
+    private var articleKey: String? = ""
+
+    private val viewModel by viewModels<ArticleUpdateViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +42,11 @@ class EditArticleActivity : AppCompatActivity() {
         actionBar!!.title = "COV ID"
         actionBar.subtitle = "Coronavirus Indonesia"
         actionBar.elevation = 0F
+
+        viewModel.init(this)
+        edtTitle = findViewById(R.id.edtTitle_edit)
+        edtLocation = findViewById(R.id.edtLocation_edit)
+        edtDescription = findViewById(R.id.edtDescription_edit)
 
         initialize()
     }
@@ -72,9 +83,18 @@ class EditArticleActivity : AppCompatActivity() {
     }
 
     private fun initialize() {
+        title = intent.getStringExtra("title").toString()
+        location = intent.getStringExtra("location").toString()
+        description = intent.getStringExtra("description").toString()
+        created = intent.getStringExtra("created").toString()
+        articleKey = intent.getStringExtra("key").toString()
+
         edtTitle = findViewById<View>(R.id.edtTitle_edit) as EditText
         edtLocation = findViewById<View>(R.id.edtLocation_edit) as EditText
         edtDescription = findViewById<View>(R.id.edtDescription_edit) as EditText
+        edtTitle?.setText(title)
+        edtDescription?.setText(description)
+        edtLocation?.setText(location)
         val bundle: Bundle? = intent.extras
         key = bundle?.getString("key").toString()
         mDatabase = FirebaseDatabase.getInstance()
@@ -102,6 +122,11 @@ class EditArticleActivity : AppCompatActivity() {
         if(title!!.isEmpty() && location!!.isEmpty() && description!!.isEmpty() ) {
             tampilToast(this, "Tidak boleh kosong")
         } else {
+            val articleBaru = Articles(title!!, description!!, location!!, created!!, key!!)
+            mDatabaseReference!!.setValue(articleBaru)
+                .addOnCompleteListener {
+                    viewModel.updateData(articleBaru)
+                }
             mDatabaseReference!!.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
                     tampilToast(applicationContext, "Gagal Error")
@@ -110,6 +135,7 @@ class EditArticleActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val articleList = snapshot.getValue(Articles::class.java)
                     if(articleList != null) {
+
                         mDatabaseReference!!.child("title").setValue(edtTitle!!.text.toString())
                         mDatabaseReference!!.child("location").setValue(edtLocation!!.text.toString())
                         mDatabaseReference!!.child("description").setValue(edtDescription!!.text.toString())

@@ -8,6 +8,8 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import com.example.latihan_challange2.util.tampilToast
+import com.example.latihan_challange2.viewmodel.ArticleFragmentViewModel
+import com.example.latihan_challange2.viewmodel.ArticleUpdateViewModel
 import com.example.latihan_challange2.viewmodel.ArticleViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -22,7 +24,10 @@ class DetailArticleActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private var key: String? = ""
 
-    private val viewModel by viewModels<ArticleViewModel>()
+    private val viewModel by viewModels<ArticleUpdateViewModel>()
+    private val viewModelF by viewModels<ArticleFragmentViewModel>()
+
+    private var articles: Articles? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +40,77 @@ class DetailArticleActivity : AppCompatActivity() {
         actionBar.elevation = 0F
 
         intialize()
-
+        viewModel.init(this)
+        viewModelF.init(this)
         getDataNews()
+
+        btn_settingnews.setOnClickListener { view ->
+            val action = arrayOf("Update", "Delete")
+            val alert = AlertDialog.Builder(view.context)
+            alert.setItems(action) { dialog, i ->
+                when(i) {
+                    0 -> {
+                        val title = txtTitle.text.toString()
+                        val location = txtLoc.text.toString()
+                        val created = txtCreated_at.text.toString()
+                        val description = txtDescription.text.toString()
+                        val bundle = Bundle()
+                        val bundleExtras: Bundle? = intent.extras
+                        val key = bundleExtras?.getString("key")
+                        bundle.putString("title", title)
+                        bundle.putString("location", location)
+                        bundle.putString("created", created)
+                        bundle.putString("description", description)
+                        bundle.putString("key", key)
+                        val intent = Intent(this@DetailArticleActivity, EditArticleActivity::class.java)
+                        intent.putExtras(bundle)
+                        startActivity(intent)
+                    }
+                    1 -> {
+                        val builder = AlertDialog.Builder(this@DetailArticleActivity)
+                        builder.setTitle("Hapus Artikel ?")
+                        builder.setMessage("Yakin artikel ini mau dihapus ?")
+                        builder.setIcon(R.drawable.ic_trash_red)
+                        builder.setPositiveButton("Delete") { dialog, which ->
+                            mDatabase = FirebaseDatabase.getInstance()
+                            val bundleExtras: Bundle? = intent.extras
+                            val key = bundleExtras?.getString("key")
+                            mDatabaseReference = mDatabase!!.reference.child("Articles").child(key!!)
+                            mDatabaseReference!!.removeValue().addOnCompleteListener {
+                                viewModelF.delete(articles!!)
+                                val intent = Intent(this@DetailArticleActivity, ArticleFragment::class.java)
+                                startActivity(intent)
+                                tampilToast(this@DetailArticleActivity, "Berhasil dihapus")
+                            }
+                        }
+                        builder.setNegativeButton("Cancel") { dialog, which ->
+                            tampilToast(this@DetailArticleActivity, "Cancelled")
+                        }
+                        val alertDialog: AlertDialog = builder.create()
+                        alertDialog.setCancelable(false)
+                        alertDialog.show()
+                    }
+                }
+            }
+            alert.create()
+            alert.show()
+            true
+        }
     }
 
     private fun intialize() {
         mDatabase = FirebaseDatabase.getInstance()
         mAuth = FirebaseAuth.getInstance()
+        val getTitle: String? = intent.getStringExtra("title").toString()
+        val getDescription: String? = intent.getStringExtra("description").toString()
+        val getLocation: String? = intent.getStringExtra("location").toString()
+        val getCreated: String? = intent.getStringExtra("created_").toString()
+        val getArticleKey: String? = intent.getStringExtra("key").toString()
+        articles = Articles(getTitle!!, getDescription!!, getLocation!!, getCreated!!, getArticleKey!!)
+        txtTitle.text = getTitle
+        txtCreated_at.text = getCreated
+        txtLoc.text = getLocation
+        txtDescription.text = getDescription
         val user = mAuth!!.currentUser
         mDatabaseReference = mDatabase!!.reference.child("Users").child(user!!.uid)
         mDatabaseReference!!.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -54,57 +123,6 @@ class DetailArticleActivity : AppCompatActivity() {
                     btn_settingnews.hide()
                 } else {
                     btn_settingnews.show()
-                    btn_settingnews.setOnClickListener { view ->
-                        val action = arrayOf("Update", "Delete")
-                        val alert = AlertDialog.Builder(view.context)
-                        alert.setItems(action) { dialog, i ->
-                            when(i) {
-                                0 -> {
-                                    val title = txtTitle.text.toString()
-                                    val location = txtLoc.text.toString()
-                                    val created = txtCreated_at.text.toString()
-                                    val description = txtDescription.text.toString()
-                                    val bundle = Bundle()
-                                    val bundleExtras: Bundle? = intent.extras
-                                    val key = bundleExtras?.getString("key")
-                                    bundle.putString("title", title)
-                                    bundle.putString("location", location)
-                                    bundle.putString("created", created)
-                                    bundle.putString("description", description)
-                                    bundle.putString("key", key)
-                                    val intent = Intent(this@DetailArticleActivity, EditArticleActivity::class.java)
-                                    intent.putExtras(bundle)
-                                    startActivity(intent)
-                                }
-                                1 -> {
-                                    val builder = AlertDialog.Builder(this@DetailArticleActivity)
-                                    builder.setTitle("Hapus Artikel ?")
-                                    builder.setMessage("Yakin artikel ini mau dihapus ?")
-                                    builder.setIcon(R.drawable.ic_trash_red)
-                                    builder.setPositiveButton("Delete") { dialog, which ->
-                                        mDatabase = FirebaseDatabase.getInstance()
-                                        val bundleExtras: Bundle? = intent.extras
-                                        val key = bundleExtras?.getString("key")
-                                        mDatabaseReference = mDatabase!!.reference.child("Articles").child(key!!)
-                                        mDatabaseReference!!.removeValue().addOnCompleteListener {
-                                            val intent = Intent(this@DetailArticleActivity, ArticleFragment::class.java)
-                                            startActivity(intent)
-                                            tampilToast(this@DetailArticleActivity, "Berhasil dihapus")
-                                        }
-                                    }
-                                    builder.setNegativeButton("Cancel") { dialog, which ->  
-                                        tampilToast(this@DetailArticleActivity, "Cancelled")
-                                    }
-                                    val alertDialog: AlertDialog = builder.create()
-                                    alertDialog.setCancelable(false)
-                                    alertDialog.show()
-                                }
-                            }
-                        }
-                        alert.create()
-                        alert.show()
-                        true
-                    }
                 }
             }
         })

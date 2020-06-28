@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-kapt'
 
 androidExtensions {
     experimental = true
@@ -11,7 +12,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion "29.0.2"
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     defaultConfig {
         applicationId "com.example.latihan_challange2"
@@ -84,9 +85,12 @@ dependencies {
     def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt 'androidx.room:room-compiler:2.2.5'
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
     implementation "androidx.room:room-guava:$room_version"
     implementation "androidx.fragment:fragment-ktx:1.2.5"
     testImplementation "androidx.room:room-testing:$room_version"
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 }

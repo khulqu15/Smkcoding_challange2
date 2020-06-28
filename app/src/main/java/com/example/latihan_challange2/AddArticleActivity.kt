@@ -10,9 +10,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.example.latihan_challange2.util.getCurrentDateTime
 import com.example.latihan_challange2.util.tampilToast
 import com.example.latihan_challange2.util.toString
+import com.example.latihan_challange2.viewmodel.ArticleViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -33,6 +35,8 @@ class AddArticleActivity : AppCompatActivity() {
 
     private val TAG: String? = "FirebaseMassaging"
 
+    private val viewModel by viewModels<ArticleViewModel>()
+
     private var mDatabaseReference: DatabaseReference? = null
     private var mDatabase: FirebaseDatabase? = null
     private var auth: FirebaseAuth? = null
@@ -45,6 +49,8 @@ class AddArticleActivity : AppCompatActivity() {
         actionBar!!.title = "COV ID"
         actionBar.subtitle = "Coronavirus Indonesia"
         actionBar.elevation = 0F
+
+        viewModel.init(this)
 
         intialize()
 
@@ -118,7 +124,9 @@ class AddArticleActivity : AppCompatActivity() {
                     mDatabaseReference!!.child("location").setValue(location)
                     mDatabaseReference!!.child("created_at").setValue(dateInString)
                     mDatabaseReference!!.child("article_key").setValue(mDatabaseReference?.key.toString())
-                    sendNotif()
+                    val articleBaru = Articles(title!!, description!!, location!!, dateInString, mDatabaseReference?.key.toString())
+                    viewModel.addData(articleBaru)
+//                    sendNotif()
                     updateInfoUi()
                 }
             })
