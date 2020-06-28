@@ -28,6 +28,6 @@ Aplikasi COVid adalah sebuah aplikasi mobile untuk data corona virus di Indonesi
 
 <div style="text-align: center">
     <p>Link Download</p>
-    <button onclick="https://drive.google.com/drive/folders/146XQmbqeei-VwOka7BzS2auGYCkVQqlJ?usp=sharing" style="border: none; padding: 10px 50px 15px 50px; border-radius: 5px; background-color: white; box-shadow: 0px .125rem .5rem rgba(0,0,0,0.2)">
-    <img src="screenshot/drive.png" width="22px" style="position: relative; top: 4px; margin-right: 10px"> Download in drive</button>
+    <a onclick="https://drive.google.com/drive/folders/146XQmbqeei-VwOka7BzS2auGYCkVQqlJ?usp=sharing" style="border: none; padding: 15px 50px 15px 50px; border-radius: 5px; background-color: white; box-shadow: 0px .125rem .5rem rgba(0,0,0,0.2)">
+    <img src="screenshot/drive.png" width="22px" style="position: relative; top: 4px; margin-right: 10px"> Download in drive</a>
 </div>
